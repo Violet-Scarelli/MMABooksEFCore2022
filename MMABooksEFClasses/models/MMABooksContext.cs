@@ -35,34 +35,47 @@ namespace MMABooksEFClasses.models
         {
             modelBuilder.Entity<Customer>(entity =>
             {
-				entity.HasKey(e => e.CustomerId)
-					.HasName("PRIMARY");
+                entity.HasKey(e => e.CustomerId)
+                    .HasName("PRIMARY");
 
-				entity.ToTable("customers");
+                entity.ToTable("customers");
 
-				entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+                entity.HasIndex(e => e.StateCode)
+					.HasName("FK_Customers_States");
 
-				entity.Property(e => e.Address).HasMaxLength(50);
+                entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
 
-				entity.Property(e => e.City).HasMaxLength(20);
+                entity.Property(e => e.Address)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
-				entity.Property(e => e.Name).HasMaxLength(100);
+                entity.Property(e => e.City)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
 
-				entity.Property(e => e.StateCode)
-					.HasMaxLength(2)
-					.IsFixedLength()
-                    .HasColumnName("State");
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
-				entity.Property(e => e.ZipCode)
-					.HasMaxLength(15)
-					.IsFixedLength();
+                entity.Property(e => e.StateCode).HasColumnName("State")
+                    .IsRequired()
+                    .HasMaxLength(2)
+                    .IsFixedLength();
 
-				entity.HasOne(d => d.State)
-					.WithMany(p => p.Customers)
-					.HasForeignKey(d => d.StateCode)
-					.OnDelete(DeleteBehavior.ClientSetNull)
-					.HasConstraintName("FK_Customers_States");
-			});
+                entity.Property(e => e.ZipCode)
+                    .IsRequired()
+                    .HasMaxLength(15)
+                    .IsFixedLength();
+
+                entity.HasOne(d => d.State)
+                    .WithMany(p => p.Customers)
+                    .HasForeignKey(d => d.StateCode)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Customers_States");
+            });
 
             modelBuilder.Entity<Invoice>(entity =>
             {

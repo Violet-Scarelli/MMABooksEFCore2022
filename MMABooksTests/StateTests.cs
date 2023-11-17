@@ -21,7 +21,7 @@ namespace MMABooksTests
         public void Setup()
         {
             dbContext = new MMABooksContext();
-            dbContext.Database.ExecuteSqlRaw("call usp_testingResetData()");
+            dbContext.Database.ExecuteSqlRaw("call usp_testingResetStateData()");
         }
 
         [Test]
@@ -38,7 +38,7 @@ namespace MMABooksTests
         {
             s = dbContext.States.Find("OR");
             Assert.IsNotNull(s);
-            Assert.AreEqual("Ore", s.StateName);
+            Assert.AreEqual("Oregon", s.StateName);
             Console.WriteLine(s);
         }
 
@@ -56,7 +56,7 @@ namespace MMABooksTests
         {
             s = dbContext.States.Include("Customers").Where(s => s.StateCode == "OR").SingleOrDefault();
             Assert.IsNotNull(s);
-            Assert.AreEqual("Ore", s.StateName);
+            Assert.AreEqual("Oregon", s.StateName);
             Assert.AreEqual(5, s.Customers.Count);
             Console.WriteLine(s);
         }
@@ -92,10 +92,10 @@ namespace MMABooksTests
             state.StateName = "Where am I";
             dbContext.States.Add(state);
             dbContext.SaveChanges();
-            Assert.AreEqual("Where am I", dbContext.States.Find("??"));
+            Assert.AreEqual("Where am I", dbContext.States.Find("??").StateName);
             state.StateName = "I am here";
             dbContext.SaveChanges();
-            Assert.AreEqual("I am here", dbContext.States.Find("??"));
+            Assert.AreEqual("I am here", dbContext.States.Find("??").StateName);
             Console.WriteLine(dbContext.States.Find("??").ToString());
         }
 
